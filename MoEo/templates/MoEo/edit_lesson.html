@@ -1,0 +1,49 @@
+{% load staticfiles %}
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<title>现代世界语 - Leciono {{ leciono.leciono }}</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'MoEo/styles.css' %}" />
+	<script src="{% static 'MoEo/scripts.js' %}"></script>
+</head>
+<body>
+<header>
+<div>
+	<a href="{% url 'moeo:edit' %}">Back</a>
+	{% autoescape off %}
+	{{ previous }} Leciono {{ leciono.leciono }} {{ next }}</br>
+	{% endautoescape %}
+	<span class="links">
+		<a href="#tekstoj">Tekstoj</a> | <a href="#vortoj">Vortoj</a> | <a href="#notoj">Notoj</a>
+	</span>
+</div>
+</header>
+<article>
+<form action="{% url 'moeo:edit_lesson' leciono.id %}" method="post">
+{% csrf_token %}
+
+<div id="tekstoj">
+	<p class="tekstoj">Tekstoj - 课文</p> <a href="javascript:novaTeksto()">nova</a>
+{% for teksto in teksto_list %}
+	<div id="teksto{{ forloop.counter }}">
+		<p>Teksto {{ forloop.counter }} <a href="javascript:forigi( {{ forloop.counter }} )">forigi</a></p>
+		<textarea name="teksto{{ forloop.counter }}" rows=6 cols=60>{{ teksto }}</textarea>
+	</div>
+{% endfor %}
+</div>
+
+<div id="vortoj">
+	<p class="vortoj">Novaj Vortoj - 生词</p>
+	<textarea name="vortoj" rows=6 cols=60>{{ vorto_list }}</textarea>
+</div>
+
+<div id="notoj">
+	<p class="notoj">Notoj - 注意</p>
+	<textarea name="notoj" rows=6 cols=100>{% for noto in leciono.noto_set.all %}{{ noto.noto }}{% endfor %}</textarea>
+</div>
+
+<input type="submit" value="Save" />
+</form>
+</article>
+</body>
+</html>

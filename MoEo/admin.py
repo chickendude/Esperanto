@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-# aldoni la modelojn
-from .models import Leciono, Teksto, Vorto, Noto
 from .models import Choice, Question
 
 class ChoiceInLine(admin.TabularInline):
@@ -18,9 +16,16 @@ class QuestionAdmin(admin.ModelAdmin):
 	list_per_page = 20
 	list_filter = ['pub_date']
 	search_fields = ['question_text']
+#################################################################
+# aldoni la modelojn
+from .models import Leciono, Teksto, Frazo, Vorto, Noto
 
 class TekstoInLine(admin.TabularInline):
 	model = Teksto
+	extra = 0
+
+class FrazoInLine(admin.TabularInline):
+	model = Frazo
 	extra = 0
 
 class VortoInLine(admin.TabularInline):
@@ -31,12 +36,12 @@ class NotoInLine(admin.TabularInline):
 	model = Noto
 	extra = 0
 
-
 class LecionoAdmin(admin.ModelAdmin):
-	fields = ['numero']
-	inlines = [TekstoInLine,VortoInLine]
+	fields = ['leciono']
+	inlines = [TekstoInLine,FrazoInLine,VortoInLine]
+	list_display = ['leciono']
+	list_filter = ['leciono']
 
 # registrigi la modelojn
 admin.site.register(Question,QuestionAdmin)
 admin.site.register(Leciono,LecionoAdmin)
-admin.site.register(Noto)

@@ -1,0 +1,68 @@
+{% load staticfiles %}
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<title>现代世界语 - Leciono 1</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'MoEo/styles.css' %}" />
+</head>
+<body>
+<header>
+<div>
+{% autoescape off %}
+	{{ previous }} Leciono {{ leciono.leciono }} {{ next }}</br>
+{% endautoescape %}
+	<span class="links">
+		<a href="#tekstoj">Tekstoj</a> | <a href="#vortoj">Vortoj</a> | <a href="#notoj">Notoj</a>
+	</span>
+</div>
+</header>
+
+<article>
+<div id="tekstoj">
+	<p class="leciono">Leciono {{ leciono.leciono }}</p>
+
+	<p class="tekstoj">Tekstoj - 课文</p>
+{% for teksto in leciono.teksto_set.all %}
+	<p class="teksto">{{ forloop.counter }}</p>
+	{% for frazo in teksto.frazo_set.all %}
+	{{ frazo.frazo }}<br>{% endfor %}
+{% endfor %}
+</div>
+<div id="vortoj">
+	<p class="vortoj">Novaj Vortoj - 生词</p>
+
+	<table border="0" cellspacing="0" cellpadding="0">
+	{% for left,right in vortoj %}
+	<tr>
+		<td>{{ left.vorto }} {% if left.rimarko %}({{ left.rimarko }}){% endif %}</td>
+		<td>{{ left.traduko }}</td>
+		<td>{{ right.vorto }} {% if right.rimarko %}({{ right.rimarko }}){% endif %}</td>
+		<td>{{ right.traduko }}</td>
+	</tr>
+	{% endfor%}
+	{% if frazoj %}
+	<tr>
+		<td colspan=4><center>---------------------------</center></td>
+	</tr>
+	{% for left,right in frazoj %}
+	<tr>
+		<td>{{ left.vorto }}</td>
+		<td>{{ left.traduko }}</td>
+		<td>{{ right.vorto }}</td>
+		<td>{{ right.traduko }}</td>
+	</tr>
+	{% endfor%}
+	{% endif %}
+	</table>
+</div>
+<div id="notoj">
+	<p class="notoj">Notoj - 注意</p>
+	
+	<ol>
+		{% for noto in notoj %}<li>{{ noto }}</li>
+		{% endfor %}
+	<ol>
+</div>
+</article>
+</body>
+</html>

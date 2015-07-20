@@ -17,5 +17,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
+	url(r'^moeo/', include('MoEo.urls', namespace='moeo')),
     url(r'^admin/', include(admin.site.urls)),
 ]

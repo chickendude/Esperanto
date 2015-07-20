@@ -1,0 +1,17 @@
+{% load staticfiles %}
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<title>现代世界语 - Leciono 1</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'MoEo/styles.css' %}" />
+</head>
+<body>
+{% if leciono_listo %}
+    <ul>
+    {% for leciono in leciono_listo %}
+        <li><a href="{% url 'moeo:edit_lesson' leciono.id %}">Lesson {{ leciono.leciono }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
