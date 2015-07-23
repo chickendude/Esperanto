@@ -78,7 +78,7 @@ def edit_lesson(request,leciono_id):
 			if frazListo:
 				frazListo.delete()
 			# divide phrases into lines and save
-			for frazo in re.split('(?<=[.!?])[ \r]',frazoj):
+			for frazo in re.split('(?<=[.!?:])[ \r]',frazoj):
 				newline = False
 				if '\n' in frazo:
 					newline = True
