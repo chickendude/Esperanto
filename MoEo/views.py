@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404,render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.views import generic
+import re
 
 from .models import Leciono, Teksto, Vorto, Noto
 
@@ -63,7 +64,7 @@ def edit(request):
 	
 # edit a specific lesson
 def edit_lesson(request,leciono_id):
-	# save lesson
+	### save lesson ###
 	if request.method == 'POST':
 		leciono = get_object_or_404(Leciono, pk=leciono_id)
 		for tekstoNum in range(1,4):
@@ -77,8 +78,14 @@ def edit_lesson(request,leciono_id):
 			if frazListo:
 				frazListo.delete()
 			# divide phrases into lines and save
-			for frazo in frazoj.split('\r\n'):
-				teksto.frazo_set.create(frazo=frazo,leciono_id=leciono_id)
+			for frazo in re.split('(?<=[.!?])[ \r]',frazoj):
+				newline = False
+				if '\n' in frazo:
+					newline = True
+				elif '---' not in frazo:
+					frazo = ' '+frazo
+				frazo = frazo.strip('\r\n')
+				teksto.frazo_set.create(frazo=frazo,leciono_id=leciono_id,newline=newline)
 			# save notes
 			try:
 				noto = leciono.noto_set.get(leciono = leciono_id)
@@ -101,7 +108,7 @@ def edit_lesson(request,leciono_id):
 				vorto,rimarko,traduko = vorto.split('\t')
 				leciono.vorto_set.create(vorto=vorto, rimarko=rimarko, traduko=traduko, leciono=leciono_id, frazo=cxuFrazo)
 		return HttpResponseRedirect(reverse('moeo:edit_lesson',args=(leciono.id,)))
-	# edit lesson
+	### edit lesson ###
 	else:
 		leciono = Leciono.objects.get(pk=leciono_id)
 		# set up links to next lessons
@@ -113,7 +120,9 @@ def edit_lesson(request,leciono_id):
 		for teksto in teksto_group:
 			teksto_list.append('')
 			for frazo in teksto.frazo_set.filter(teksto=teksto.id):
-				teksto_list[i] += frazo.frazo + '\n'
+				if frazo.newline == True:
+					teksto_list[i] += '\n'
+				teksto_list[i] += frazo.frazo
 			teksto_list[i] = teksto_list[i].strip('\n')
 			i+=1
 		# load up words

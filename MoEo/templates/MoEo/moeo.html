@@ -4,7 +4,30 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 	<title>现代世界语 - Leciono 1</title>
 	<link rel="stylesheet" type="text/css" href="{% static 'MoEo/styles.css' %}" />
+
+	<script src="{% static 'soundmanager/soundmanager2.js' %}"></script>
+<script>
+soundManager.setup({
+  url: '{% static 'soundmanager/' %}',
+  preferFlash: false,
+  onready: function() {
+    // Ready to use; soundManager.createSound() etc. can now be called.
+  }
+});
+
+function playSound(sound) {
+    var mySound = soundManager.createSound({
+		url: '{% static 'MoEo/audio/' %}' + sound
+	});
+	mySound.play();
+}
+
+</script>
+<script>
+
+</script>
 </head>
+
 <body>
 <header>
 <div>
@@ -23,9 +46,9 @@
 
 	<p class="tekstoj">Tekstoj - 课文</p>
 {% for teksto in leciono.teksto_set.all %}
-	<p class="teksto">{{ forloop.counter }}</p>
-	{% for frazo in teksto.frazo_set.all %}
-	{{ frazo.frazo }}<br>{% endfor %}
+	<p class="teksto"><a class="audio" href="javascript:playSound('Leciono {{ leciono.leciono }}/Teksto {{ teksto.number }}/malrapida.mp3')">[malrapide]</a>{{ forloop.counter }}</p>
+	{% for frazo in teksto.frazo_set.all %}{% if frazo.newline %}</br>{% endif %}
+	<a class="audio" href="javascript:playSound('Leciono {{ leciono.leciono }}/Teksto {{ teksto.number }}/{{ forloop.counter}}.mp3')">{{ frazo.frazo }}</a>{% endfor %}
 {% endfor %}
 </div>
 <div id="vortoj">
