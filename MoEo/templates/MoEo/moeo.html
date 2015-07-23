@@ -59,8 +59,10 @@
 	<p class="notoj">Notoj - 注意</p>
 	
 	<ol>
+{% autoescape off %}
 		{% for noto in notoj %}<li>{{ noto }}</li>
 		{% endfor %}
+{% endautoescape %}
 	<ol>
 </div>
 </article>
