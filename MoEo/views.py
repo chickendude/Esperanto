@@ -45,8 +45,8 @@ from .models import Leciono, Teksto, Vorto, Noto
 
 def getLessonLinks(url,leciono):
 	# set up links to next lessons
-	previous_lesson = "<a href=\"" + reverse(url,args=(leciono.id-1,)) +"\">Lesson "+ str(leciono.leciono-1) +"</a>"
-	next_lesson = "<a href=\"" + reverse(url,args=(leciono.id+1,)) +"\">Lesson "+ str(leciono.leciono+1) +"</a>"
+	previous_lesson = "<a class=\"link\" href=\"" + reverse(url,args=(leciono.id-1,)) +"\"><<</a>"
+	next_lesson = "<a class=\"link\" href=\"" + reverse(url,args=(leciono.id+1,)) +"\">>></a>"
 	if leciono.leciono == 1:
 		previous_lesson = ''
 	if not Leciono.objects.filter(pk=leciono.id+1):
