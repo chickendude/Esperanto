@@ -87,3 +87,13 @@ A.audio {
 	color: #000;
 	text-decoration: none;
 }
+
+A:hover.audio {
+	color: #000;
+	text-decoration: underline;
+}
+
+A.audiofull {
+	color: #959;
+	text-decoration: none;
+}
