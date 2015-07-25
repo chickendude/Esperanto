@@ -77,15 +77,17 @@ def edit_lesson(request,leciono_id):
 			frazListo = teksto.frazo_set.filter(teksto=teksto.id)
 			if frazListo:
 				frazListo.delete()
+			unua = True
 			# divide phrases into lines and save
 			for frazo in re.split('(?<=[.!?:])[ \r]',frazoj):
 				newline = False
 				if '\n' in frazo:
 					newline = True
-				elif '---' not in frazo:
+				elif '---' not in frazo and not unua:
 					frazo = ' '+frazo
 				frazo = frazo.strip('\r\n')
 				teksto.frazo_set.create(frazo=frazo,leciono_id=leciono_id,newline=newline)
+				unua = False
 			# save notes
 			try:
 				noto = leciono.noto_set.get(leciono = leciono_id)
