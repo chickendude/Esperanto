@@ -67,48 +67,53 @@ def edit_lesson(request,leciono_id):
 	### save lesson ###
 	if request.method == 'POST':
 		leciono = get_object_or_404(Leciono, pk=leciono_id)
-		for tekstoNum in range(1,4):
-			frazoj = request.POST['teksto'+str(tekstoNum)]
+
+		for teksto in leciono.teksto_set.filter(leciono=leciono.id):
+			teksto.delete()
+
+		for tekstoNum in range(1,10):
 			try:
-				teksto = leciono.teksto_set.get(number=tekstoNum)
-			except:
+				frazoj = request.POST['teksto'+str(tekstoNum)]
+				# krei la tekston
 				teksto = leciono.teksto_set.create(number=tekstoNum)
-			# delete phrases
-			frazListo = teksto.frazo_set.filter(teksto=teksto.id)
-			if frazListo:
-				frazListo.delete()
-			unua = True
-			# divide phrases into lines and save
-			for frazo in re.split('(?<=[.!?:\"])[ \r]',frazoj):
-				newline = False
-				if '\n' in frazo:
-					newline = True
-				elif '---' not in frazo and not unua:
-					frazo = ' '+frazo
-				frazo = frazo.strip('\r\n')
-				teksto.frazo_set.create(frazo=frazo,leciono_id=leciono_id,newline=newline)
-				unua = False
-			# save notes
-			try:
-				noto = leciono.noto_set.get(leciono = leciono_id)
+				# delete phrases
+				frazListo = teksto.frazo_set.filter(teksto=teksto.id)
+				if frazListo:
+					frazListo.delete()
+				unua = True
+				# divide phrases into lines and save
+				for frazo in re.split('(?<=[.!?:\"])[ \r]',frazoj):
+					newline = False
+					if '\n' in frazo:
+						newline = True
+					elif '---' not in frazo and not unua:
+						frazo = ' '+frazo
+					frazo = frazo.strip('\r\n')
+					teksto.frazo_set.create(frazo=frazo,leciono_id=leciono_id,newline=newline)
+					unua = False
 			except:
-				noto = leciono.noto_set.create()
-			noto.noto = request.POST['notoj']
-			noto.save()
-			# delete old words
-			vortListo = leciono.vorto_set.filter(leciono=leciono_id)
-			if vortListo:
-				vortListo.delete()
-			# save vortojn
-			vortoj = request.POST['vortoj']
-			vorto_list = vortoj.split('\r\n')
-			cxuFrazo = False
-			for vorto in vorto_list:
-				if vorto == "**":
-					cxuFrazo = True
-					continue
-				vorto,rimarko,traduko = vorto.split('\t')
-				leciono.vorto_set.create(vorto=vorto, rimarko=rimarko, traduko=traduko, leciono=leciono_id, frazo=cxuFrazo)
+				break
+		# save notes
+		try:
+			noto = leciono.noto_set.get(leciono = leciono_id)
+		except:
+			noto = leciono.noto_set.create()
+		noto.noto = request.POST['notoj']
+		noto.save()
+		# delete old words
+		vortListo = leciono.vorto_set.filter(leciono=leciono_id)
+		if vortListo:
+			vortListo.delete()
+		# save vortojn
+		vortoj = request.POST['vortoj']
+		vorto_list = vortoj.split('\r\n')
+		cxuFrazo = False
+		for vorto in vorto_list:
+			if vorto == "**":
+				cxuFrazo = True
+				continue
+			vorto,rimarko,traduko = vorto.split('\t')
+			leciono.vorto_set.create(vorto=vorto, rimarko=rimarko, traduko=traduko, leciono=leciono_id, frazo=cxuFrazo)
 		return HttpResponseRedirect(reverse('moeo:edit_lesson',args=(leciono.id,)))
 	### edit lesson ###
 	else:
